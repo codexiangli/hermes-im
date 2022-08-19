@@ -1,0 +1,52 @@
+syntax = "proto2";
+
+package com.codexiangli;
+option java_multiple_files = true;
+option java_package = "com.codexiangli.im.common.api.proto";
+option java_outer_classname = "ImApiProtos";
+option optimize_for = LITE_RUNTIME;
+
+enum ProtocolVersion {
+  v0 = 0;  // 初始版本
+}
+
+message KeyValue {
+  required string key = 1;
+  required string value = 2;
+}
+
+message KeyLongValue {
+  required string key = 1;
+  required uint64 value = 2;
+}
+
+message IntRange {
+  required int32 start = 1;
+  required int32 end = 2;
+}
+
+message RequestMetadata {
+  required uint64 sequence_id     = 1;
+  repeated KeyValue properties    = 2;
+}
+
+message CommandRequest {
+  required uint64 request_id = 1;
+}
+
+message BaseCommand {
+  enum Type {
+    LOGIN = 1;
+    LOGIN_RESPONSE = 2;
+    MESSAGE = 3;
+    MESSAGE_RESPONSE = 4;
+  }
+  required Type type = 1;
+  optional CommandRequest request = 2;
+}
+
+message Request {
+  required BaseCommand cmd = 3;
+  required RequestMetadata metadata = 5;
+  optional bytes payload = 6;
+}
