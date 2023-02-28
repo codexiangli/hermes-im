@@ -22,8 +22,8 @@ public abstract class ImRequestHandler extends SimpleChannelInboundHandler<Reque
             case MESSAGE:
                 handleMessage(request);
                 break;
-            case MESSAGE_RESPONSE:
-                handleMessagePush(request);
+            case LOGIN:
+                handleLogin(request);
                 break;
             default:
                 break;
@@ -35,6 +35,10 @@ public abstract class ImRequestHandler extends SimpleChannelInboundHandler<Reque
     }
 
     protected void handleMessagePush(Request request) {
+        throw new UnsupportedOperationException();
+    }
+
+    protected void handleLogin(Request request) {
         throw new UnsupportedOperationException();
     }
 }

@@ -30,8 +30,20 @@ message RequestMetadata {
   repeated KeyValue properties    = 2;
 }
 
-message CommandRequest {
+message CommandMessage {
   required uint64 request_id = 1;
+  required string source_user_id = 2;
+  enum MessageType {
+    SINGLE = 1;
+    GROUP = 2;
+  }
+  required MessageType messageType = 3;
+  required string to_user_id = 4;
+}
+
+message CommandLogin {
+  required string user_id = 1;
+  required string password = 2;
 }
 
 message BaseCommand {
@@ -39,10 +51,10 @@ message BaseCommand {
     LOGIN = 1;
     LOGIN_RESPONSE = 2;
     MESSAGE = 3;
-    MESSAGE_RESPONSE = 4;
   }
   required Type type = 1;
-  optional CommandRequest request = 2;
+  optional CommandMessage msg = 2;
+  optional CommandLogin login = 3;
 }
 
 message Request {

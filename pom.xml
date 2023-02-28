@@ -2,6 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.2.RELEASE</version>
+    </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.codexiangli</groupId>
@@ -13,6 +19,7 @@
         <module>hermes-im-server</module>
         <module>hermes-im-common</module>
         <module>hermes-im-client</module>
+        <module>hermes-im-core</module>
     </modules>
 
     <properties>
@@ -27,6 +34,11 @@
         <protobuf3.version>3.11.4</protobuf3.version>
         <protoc3.version>${protobuf3.version}</protoc3.version>
         <juint.version>5.3.1</juint.version>
+        <pulsar-client.version>2.8.1</pulsar-client.version>
+        <mybatis-plus-version>3.4.2</mybatis-plus-version>
+        <mysql-connector-java.version>8.0.24</mysql-connector-java.version>
+        <druid.version>1.2.8</druid.version>
+        <pulsar.version>2.11.0</pulsar.version>
 
         <!-- Plugin dependencies -->
         <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
@@ -50,6 +62,16 @@
             <dependency>
                 <groupId>com.codexiangli</groupId>
                 <artifactId>hermes-im-server</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.codexiangli</groupId>
+                <artifactId>hermes-im-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.codexiangli</groupId>
+                <artifactId>hermes-im-dispatcher</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -96,6 +118,38 @@
                 <artifactId>junit-jupiter-api</artifactId>
                 <version>${juint.version}</version>
                 <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.pulsar</groupId>
+                <artifactId>pulsar-client</artifactId>
+                <version>${pulsar-client.version}</version>
+            </dependency>
+
+
+            <!-- https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-boot-starter -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector-java.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.pulsar</groupId>
+                <artifactId>pulsar-client</artifactId>
+                <version>${pulsar.version}</version>
             </dependency>
 
         </dependencies>

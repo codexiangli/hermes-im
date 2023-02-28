@@ -1,16 +1,17 @@
 package com.codexiangli.im.server.handler;
 
-import com.codexiangli.im.common.api.proto.*;
+import com.codexiangli.im.common.api.proto.CommandMessage;
+import com.codexiangli.im.common.api.proto.Request;
 import com.codexiangli.im.common.handler.ImHandler;
-import com.codexiangli.im.server.connection.Connection;
-import com.codexiangli.im.server.connection.ConnectionHandler;
-import com.codexiangli.im.server.connection.ConnectionPool;
-import com.google.protobuf.ByteString;
+import com.codexiangli.im.core.connection.Connection;
+import com.codexiangli.im.core.connection.ConnectionHandler;
+import com.codexiangli.im.core.connection.ConnectionPool;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
-
-import java.net.SocketAddress;
-import java.nio.charset.StandardCharsets;
+import org.apache.pulsar.client.api.Producer;
+import org.apache.pulsar.client.api.PulsarClient;
+import org.apache.pulsar.client.api.PulsarClientException;
+import org.apache.pulsar.client.api.Schema;
 
 /**
  * @author lixiang
@@ -21,14 +22,24 @@ public class ServerCnx extends ImHandler implements ConnectionHandler {
 
     private long counter = 1;
 
-    public ServerCnx() {
+    private PulsarClient pulsarClient;
+    private Producer<Request> requestProducer;
+
+    public ServerCnx(PulsarClient pulsarClient) {
         super();
+        this.pulsarClient = pulsarClient;
+        try {
+            requestProducer = pulsarClient.newProducer(Schema.PROTOBUF(Request.class))
+                    .topic("single-message-topic")
+                    .create();
+        } catch (PulsarClientException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         this.ctx = ctx;
-        onConnectionOpen(new Connection(1L ,ctx.channel()));
         // todo schedule job to keep alive
     }
 
@@ -39,27 +50,35 @@ public class ServerCnx extends ImHandler implements ConnectionHandler {
 
     @Override
     protected void handleMessage(Request request) {
-        String payload = request.getPayload().toString(StandardCharsets.UTF_8);
-        log.info("服务器收到请求：{}, {}", payload, counter++);
-        Request response = Request.newBuilder()
-                .setCmd(BaseCommand.newBuilder()
-                        .setRequest(CommandRequest.newBuilder()
-                                .setRequestId(System.currentTimeMillis())
-                                .build())
-                        .setType(BaseCommand.Type.MESSAGE_RESPONSE))
-                .setMetadata(RequestMetadata.newBuilder()
-                        .addProperties(KeyValue.newBuilder().setKey("key1").setValue("value1").build())
-                        .setSequenceId(System.currentTimeMillis())
-                        .build())
-                .setPayload(ByteString.copyFromUtf8(payload)).build();
         // todo 根据请求中的用户id找真正的connection 再进一步todo 封装推送任务() 再进一步 先推到pulsar/kafka
-        Connection connection = ConnectionPool.getConnectionByUser(1L);
-        connection.getChannel().writeAndFlush(response);
+        CommandMessage commandMessage = request.getCmd().getMsg();
+        switch (commandMessage.getMessageType()) {
+            case SINGLE:
+            {
+                try {
+                    requestProducer.send(request);
+                } catch (PulsarClientException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case GROUP:
+                // todo
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    protected void handleLogin(Request request) {
+        // todo 验证用户&密码
+        onConnectionOpen(new Connection(request.getCmd().getLogin().getUserId() ,ctx.channel()));
     }
 
     @Override
     public void onConnectionOpen(Connection connection) {
-        SocketAddress socketAddress = ctx.channel().remoteAddress();
+        log.info("收到连接，userId：{}", connection.getUserId());
         ConnectionPool.createConnection(connection.getUserId(), connection);
     }
 

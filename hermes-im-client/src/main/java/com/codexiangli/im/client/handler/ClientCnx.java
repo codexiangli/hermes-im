@@ -1,5 +1,6 @@
 package com.codexiangli.im.client.handler;
 
+import com.codexiangli.im.common.api.proto.CommandMessage;
 import com.codexiangli.im.common.api.proto.Request;
 import com.codexiangli.im.common.handler.ImHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -27,6 +28,12 @@ public class ClientCnx extends ImHandler {
         this.remoteAddress = ctx.channel().remoteAddress();
         this.ctx = ctx;
         // todo schedule job to keep alive
+    }
+
+    @Override
+    protected void handleMessage(Request request) {
+        String payload = request.getPayload().toString(StandardCharsets.UTF_8);
+        log.info("客户端收到消息：{}, {}", payload, counter++);
     }
 
     @Override

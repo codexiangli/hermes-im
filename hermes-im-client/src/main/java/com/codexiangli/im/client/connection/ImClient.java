@@ -70,11 +70,30 @@ public class ImClient {
         return channelFuture;
     }
 
+    public void login(String userId, String password) {
+        // todo 剥离登陆 封装实体
+        Request request = Request.newBuilder()
+                .setCmd(BaseCommand.newBuilder()
+                        .setType(BaseCommand.Type.LOGIN)
+                        .setLogin(CommandLogin.newBuilder()
+                                .setUserId(userId)
+                                .setPassword(password)
+                                .build()))
+                .setMetadata(RequestMetadata.newBuilder()
+                        .setSequenceId(System.currentTimeMillis())
+                        .build())
+                .build();
+        channel.writeAndFlush(request);
+    }
+
     public void sendStringTo(String message) {
         Request request = Request.newBuilder()
                 .setCmd(BaseCommand.newBuilder()
-                        .setRequest(CommandRequest.newBuilder()
+                        .setMsg(CommandMessage.newBuilder()
                                 .setRequestId(System.currentTimeMillis())
+                                .setMessageType(CommandMessage.MessageType.SINGLE)
+                                .setSourceUserId("001")
+                                .setToUserId("002")
                                 .build())
                         .setType(BaseCommand.Type.MESSAGE))
                 .setMetadata(RequestMetadata.newBuilder()

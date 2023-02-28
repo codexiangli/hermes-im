@@ -1,6 +1,7 @@
 package com.codexiangli.im.server.initializer;
 
 import com.codexiangli.im.common.api.proto.Request;
+import com.codexiangli.im.core.dispatcher.routing.PulsarClientFactory;
 import com.codexiangli.im.server.handler.ServerCnx;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -25,7 +26,7 @@ public class ImServerChannelInitializer extends ChannelInitializer<SocketChannel
                 Commands.DEFAULT_MAX_MESSAGE_SIZE + Commands.MESSAGE_SIZE_FRAME_PADDING, 0, 4, 0, 4));*/
         pipeline.addLast(new ProtobufVarint32FrameDecoder())
                 .addLast(new ProtobufDecoder(Request.getDefaultInstance()));
-        ServerCnx cnx = new ServerCnx();
+        ServerCnx cnx = new ServerCnx(PulsarClientFactory.createPulsarClient(null));
         pipeline.addLast("handler", cnx);
         pipeline.addLast(new ProtobufVarint32LengthFieldPrepender());
         pipeline.addLast(new ProtobufEncoder());
