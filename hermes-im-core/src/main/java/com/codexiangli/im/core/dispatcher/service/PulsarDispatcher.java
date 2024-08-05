@@ -9,8 +9,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.client.api.*;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
 
 /**
  * @author lixiang
@@ -18,13 +22,13 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-public class PulsarDispatcher implements BeanPostProcessor {
+public class PulsarDispatcher {
 
     @Autowired
     private PulsarClient pulsarClient;
 
-    @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    // @PostConstruct
+    public void initConsumer() {
         ConsumerBuilder<Request> consumerBuilder = pulsarClient
                 .newConsumer(Schema.PROTOBUF(Request.class))
                 .topic("single-message-topic")
@@ -39,8 +43,7 @@ public class PulsarDispatcher implements BeanPostProcessor {
                         Connection connection = ConnectionPool.getConnectionByUser(commandMessage.getToUserId());
                         connection.getChannel().writeAndFlush(request);
                         log.info("consumer-{} start receive message payload:{}", consumer, request);
-                       /* method.invoke(holder.getBean(), pulsarMessage);*/
-
+                        /* method.invoke(holder.getBean(), pulsarMessage);*/
                         consumer.acknowledge(msg);
                         log.info("consumer-{} ack message payload:{} complete", consumer, request);
                     } catch (Exception e) {
@@ -55,6 +58,5 @@ public class PulsarDispatcher implements BeanPostProcessor {
         } catch (PulsarClientException e) {
             e.printStackTrace();
         }
-        return bean;
     }
 }
