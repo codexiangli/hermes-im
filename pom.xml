@@ -31,10 +31,9 @@
         <lombok.version>1.18.20</lombok.version>
         <slf4j.version>1.7.25</slf4j.version>
         <logback.version>1.2.3</logback.version>
-        <protobuf3.version>3.11.4</protobuf3.version>
+        <protobuf3.version>3.19.0</protobuf3.version>
         <protoc3.version>${protobuf3.version}</protoc3.version>
         <juint.version>5.3.1</juint.version>
-        <pulsar-client.version>2.8.1</pulsar-client.version>
         <mybatis-plus-version>3.4.2</mybatis-plus-version>
         <mysql-connector-java.version>8.0.24</mysql-connector-java.version>
         <druid.version>1.2.8</druid.version>
@@ -69,11 +68,6 @@
                 <artifactId>hermes-im-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.codexiangli</groupId>
-                <artifactId>hermes-im-dispatcher</artifactId>
-                <version>${project.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>io.netty</groupId>
@@ -101,12 +95,6 @@
             </dependency>
 
             <dependency>
-                <groupId>io.grpc</groupId>
-                <artifactId>grpc-protobuf-lite</artifactId>
-                <version>${grpc.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-bom</artifactId>
                 <version>${protobuf3.version}</version>
@@ -119,11 +107,11 @@
                 <version>${juint.version}</version>
                 <scope>test</scope>
             </dependency>
-
             <dependency>
-                <groupId>org.apache.pulsar</groupId>
-                <artifactId>pulsar-client</artifactId>
-                <version>${pulsar-client.version}</version>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${juint.version}</version>
+                <scope>test</scope>
             </dependency>
 
 

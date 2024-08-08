@@ -65,7 +65,7 @@
                 <artifactId>protobuf-maven-plugin</artifactId>
                 <version>${protobuf-maven-plugin.version}</version>
                 <configuration>
-                    <protocArtifact>com.google.protobuf:protoc:${protoc3.version}:exe:${os.detected.classifier}</protocArtifact>
+                    <protocArtifact>com.google.protobuf:protoc:${protoc3.version}:exe:osx-aarch_64</protocArtifact>
                     <checkStaleness>true</checkStaleness>
                     <excludes>
                         <exclude>**/ResourceUsage.proto</exclude>

@@ -4,6 +4,7 @@ import com.codexiangli.im.client.config.ClientConfig;
 import com.codexiangli.im.client.connection.ImClient;
 import io.netty.channel.ChannelFuture;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.concurrent.TimeUnit;
 
@@ -11,10 +12,10 @@ import java.util.concurrent.TimeUnit;
  * @author lixiang
  * @since 2022/8/15
  */
-class ImClientTest {
+public class ImClientTest {
 
     @Test
-    void sendStringTo() throws InterruptedException {
+    public void sendStringTo() throws InterruptedException {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setErrorCount(3);
         ImClient imClient = new ImClient(clientConfig);
@@ -28,7 +29,7 @@ class ImClientTest {
     }
 
     @Test
-    void receive() throws InterruptedException {
+    public void receive() throws InterruptedException {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setErrorCount(3);
         ImClient imClient = new ImClient(clientConfig);

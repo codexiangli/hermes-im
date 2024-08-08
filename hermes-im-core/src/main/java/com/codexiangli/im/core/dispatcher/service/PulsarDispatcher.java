@@ -27,7 +27,7 @@ public class PulsarDispatcher {
     @Autowired
     private PulsarClient pulsarClient;
 
-    // @PostConstruct
+    @PostConstruct
     public void initConsumer() {
         ConsumerBuilder<Request> consumerBuilder = pulsarClient
                 .newConsumer(Schema.PROTOBUF(Request.class))

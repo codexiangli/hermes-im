@@ -49,7 +49,7 @@
 
     <build>
         <plugins>
-            <plugin>
+            <!--<plugin>
                 <groupId>com.github.splunk.lightproto</groupId>
                 <artifactId>lightproto-maven-plugin</artifactId>
                 <version>${lightproto-maven-plugin.version}</version>
@@ -60,7 +60,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
 
             <!--<plugin>
                 <groupId>org.xolstice.maven.plugins</groupId>
