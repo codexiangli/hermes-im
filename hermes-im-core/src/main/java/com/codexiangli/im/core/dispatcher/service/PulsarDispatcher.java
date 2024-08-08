@@ -15,6 +15,7 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.Objects;
 
 /**
  * @author lixiang
@@ -40,12 +41,19 @@ public class PulsarDispatcher {
                     try {
                         BaseCommand baseCommand = request.getCmd();
                         CommandMessage commandMessage = baseCommand.getMsg();
+                        // 这里先简单判断下用户在不在线 简单处理下 后续完善
                         Connection connection = ConnectionPool.getConnectionByUser(commandMessage.getToUserId());
-                        connection.getChannel().writeAndFlush(request);
+                        if (Objects.nonNull(connection)) {
+                            connection.getChannel().writeAndFlush(request);
+                            consumer.acknowledge(msg);
+                            log.info("consumer-{} ack message payload:{} complete", consumer, request);
+                        } else {
+                            log.info("用户{}不在线，暂不投递消息", commandMessage.getToUserId());
+                            consumer.negativeAcknowledge(msg);
+                            log.info("consumer-{} nack message payload:{} complete", consumer, request);
+                        }
                         log.info("consumer-{} start receive message payload:{}", consumer, request);
                         /* method.invoke(holder.getBean(), pulsarMessage);*/
-                        consumer.acknowledge(msg);
-                        log.info("consumer-{} ack message payload:{} complete", consumer, request);
                     } catch (Exception e) {
                         log.info("consumer-{}  process message payload:{} fail", consumer, request);
                         consumer.negativeAcknowledge(msg);
